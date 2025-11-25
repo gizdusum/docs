@@ -32,9 +32,9 @@ If your app does not rely on followers, FIDs, casts, or social graph logic, use 
 
 If your app does rely on that data, consider if you are willing to require users to have a Farcaster account.
 
-<Note>
+<Tip>
 For a complete guide on authenticating users with SIWE, see our [Authenticate Users](/base-account/guides/authenticate-users#add-the-base-sign-in-with-base-button) guide using Sign in with Base.
-</Note>
+</Tip>
 
 ## Quick Auth
 
@@ -46,9 +46,9 @@ When Quick Auth is called:
 * The SDK returns a JWT that your backend verifies to confirm the user's identity
 * The backend returns trusted data that can be used for sensitive actions
 
-<Tip>
+<Note>
 This differs from the [Context API](/mini-apps/core-concepts/context), which provides instant access to user information without authentication but cannot be trusted for sensitive operations.
-</Tip>
+</Note>
 
 
 ## Implementation
