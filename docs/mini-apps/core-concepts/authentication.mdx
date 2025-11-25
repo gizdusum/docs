@@ -11,6 +11,14 @@ When deciding between SIWE and SIWF, the core question is whether your app depen
 
 ![auth-flow-chart](/images/miniapps/auth-flowchart.png)
 
+#### Sending Notifications
+
+If your app plans to send notifications to users, you must use SIWF.
+Notifications require a Farcaster identity (FID), which is only available through Sign-in With Farcaster.
+
+You can still support SIWE if your app also needs a universal wallet-based identity, but SIWF is required for any notification functionality.
+
+
 #### App location
 
 If your app will be used on the open web, other wallets, or standalone mobile apps, use SIWE as your primary authentication.
