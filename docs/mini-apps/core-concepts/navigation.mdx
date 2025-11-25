@@ -256,6 +256,17 @@ Launch your mini app directly from external sources like websites, QR codes, or 
   Launch Mini App
 </a>
 ```
+### Direct Messages (Users or Agents)
+
+Start a private conversation with a specific user or agent.
+
+```typescript DeeplinkDM.tsx
+<button 
+  onClick={() => openUrl(`cbwallet://messaging/${address}`)} 
+>
+  Send Direct Message
+</button>
+```
 
 ### Group Messages
 
@@ -288,18 +299,6 @@ Use the `conversationID` as a button:
   onClick={() => openUrl(`cbwallet://messaging/${conversationID}`)} 
 >
   Join Members Only Chat
-</button>
-```
-
-### Direct Messages (Users or Agents)
-
-Start a private conversation with a specific user or agent.
-
-```typescript DeeplinkDM.tsx
-<button 
-  onClick={() => openUrl(`cbwallet://messaging/${address}`)} 
->
-  Send Direct Message
 </button>
 ```
 
