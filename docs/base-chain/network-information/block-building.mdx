@@ -30,7 +30,7 @@ Flashblocks are built every 200ms, each ordering a portion of the block. Unlike 
 
 ##### High Gas Limits
 
-If your app creates transactions with large gas limits, we recommend monitoring to detect any changes in inclusion latency. Transactions with gas limits over 1/10 of the current block gas limit (currently 14 million gas), face additional constraints:
+If your app creates transactions with large gas limits, we recommend monitoring to detect any changes in inclusion latency. Transactions with gas limits over 1/10 of the current block gas limit (block gas limit currently at 187.5 million gas as of Jan 21, 2026), face additional constraints:
 
 * Each Flashblock can only use a portion of the block's total gas limit
 * Flashblock 1: up to 1/10 of the total gas
