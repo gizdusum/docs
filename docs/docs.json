@@ -1003,17 +1003,17 @@
           {
             "group": "Use Cases",
             "pages": [
-              "cookbook/onboard-any-user",
               "cookbook/accept-crypto-payments",
               "cookbook/spend-permissions-ai-agent",
+              "cookbook/base-app-coins",
+              "cookbook/defi-your-app",
+              "cookbook/deploy-openclaw-on-aws",
+              "cookbook/go-gasless",
               "cookbook/launch-ai-agents",
               "cookbook/launch-tokens",
+              "cookbook/onboard-any-user",
               "cookbook/onchain-social",
-              "cookbook/defi-your-app",
-              "cookbook/go-gasless",
-              "cookbook/base-app-coins",
-              "cookbook/testing-onchain-apps",
-              "cookbook/deploy-openclaw-on-aws"
+              "cookbook/testing-onchain-apps"
             ]
           },
           {

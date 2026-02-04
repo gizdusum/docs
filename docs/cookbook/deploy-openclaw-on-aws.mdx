@@ -295,6 +295,34 @@ OpenClaw connects to your configured channels (like Telegram) and starts listeni
 2. Send a message like "Hello!"
 3. Your OpenClaw assistant should respond
 
+### Access the Gateway Dashboard
+
+OpenClaw includes a Gateway Dashboard UI on port 18789 for monitoring and managing your agent. Since this port isn't exposed publicly, use SSH tunneling to access it securely from your local machine.
+
+**Set up the tunnel:**
+
+```bash Terminal
+ssh -i ~/Downloads/your-key.pem -L 18789:localhost:18789 ubuntu@YOUR_INSTANCE_IP
+```
+
+This forwards port 18789 on your local machine to the server. While the SSH session is active, open your browser and navigate to:
+
+```
+http://localhost:18789
+```
+
+<Tip>
+To run the tunnel in the background without an interactive shell, add the `-N` flag:
+
+```bash Terminal
+ssh -i ~/Downloads/your-key.pem -L 18789:localhost:18789 -N ubuntu@YOUR_INSTANCE_IP
+```
+</Tip>
+
+<Note>
+Ensure port 443 (HTTPS) is open for IPv4 in your Lightsail instance's networking settings. In the Lightsail console, go to your instance → **Networking** → **IPv4 Firewall** and add a rule for HTTPS (port 443).
+</Note>
+
 ## Security best practices
 
 ### Configure the firewall
