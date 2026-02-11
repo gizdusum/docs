@@ -1,0 +1,212 @@
+---
+title: Resource Metering
+description: Learn how Base measures transaction resource usage and how to set priority fees for reliable block inclusion.
+---
+
+## Overview
+
+Base uses **resource metering** to measure how much computation each transaction requires during block building. Three resources are tracked:
+
+- **Gas** — total gas consumed by the transaction
+- **Execution time** — wall-clock time spent executing the transaction in the EVM
+- **Data availability (DA)** — compressed transaction size posted to L1
+
+Each resource has a limited budget per block (or per flashblock). When demand exceeds capacity, the block builder includes transactions in priority fee order: higher-paying transactions are included first, and lower-paying transactions are displaced.
+
+Resource metering affects you in two ways:
+
+1. **Transactions that consume excessive resources may be excluded from blocks.** If your transaction uses a disproportionate amount of execution time or DA relative to its gas usage, it may be excluded even if its gas-based priority fee would normally be sufficient.
+2. **You can query the recommended priority fee for your transaction.** The `base_meteredPriorityFeePerGas` RPC method simulates your transaction and returns the priority fee needed to get included based on recent block congestion across all three resources.
+
+## Get a recommended priority fee
+
+The `base_meteredPriorityFeePerGas` RPC method simulates a bundle of transactions and returns a recommended priority fee based on recent block congestion. It evaluates all three resource types independently and returns the highest fee across them.
+
+### Request
+
+Send a JSON-RPC request with a single `bundle` object:
+
+```json title="Example request"
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "base_meteredPriorityFeePerGas",
+  "params": [
+    {
+      "txs": ["0x02f86c..."],
+      "blockNumber": "0x0"
+    }
+  ]
+}
+```
+
+#### Bundle parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `txs` | `Bytes[]` | Yes | RLP-encoded signed transactions (EIP-2718 envelopes) |
+| `blockNumber` | `quantity` | Yes | Target block number (hex). Use `0x0` for the current block. |
+| `flashblockNumberMin` | `quantity` | No | Earliest flashblock index for inclusion |
+| `flashblockNumberMax` | `quantity` | No | Latest flashblock index for inclusion |
+| `minTimestamp` | `quantity` | No | Earliest block timestamp for inclusion |
+| `maxTimestamp` | `quantity` | No | Latest block timestamp for inclusion |
+| `revertingTxHashes` | `TxHash[]` | No | Transaction hashes allowed to revert without failing the bundle |
+| `replacementUuid` | `string` | No | UUID for replacing a previously submitted bundle |
+| `droppingTxHashes` | `TxHash[]` | No | Transaction hashes to drop from the pool |
+
+### Response
+
+The response includes the priority fee recommendation alongside full bundle simulation results.
+
+#### Top-level fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `priorityFee` | `quantity` | Recommended priority fee per gas (hex). This is the maximum across all resource types. |
+| `blocksSampled` | `integer` | Number of recent blocks used for the estimate. `0` means no historical data was available. |
+| `resourceEstimates` | `ResourceEstimate[]` | Per-resource fee breakdown |
+| `totalGasUsed` | `integer` | Total gas consumed by all transactions |
+| `totalExecutionTimeUs` | `integer` | Total EVM execution time in microseconds |
+| `stateRootTimeUs` | `integer` | Time to compute the state root in microseconds |
+| `stateBlockNumber` | `integer` | Block number used for simulation state |
+| `stateFlashblockIndex` | `integer` | Flashblock index used for simulation state (omitted if not applicable) |
+| `results` | `TransactionResult[]` | Per-transaction simulation results |
+| `bundleGasPrice` | `quantity` | Effective gas price of the bundle |
+| `bundleHash` | `hash` | Hash of the bundle |
+| `coinbaseDiff` | `quantity` | Total change in sequencer balance |
+| `ethSentToCoinbase` | `quantity` | ETH explicitly sent to the sequencer |
+| `gasFees` | `quantity` | Total gas fees paid by the bundle |
+
+#### Resource estimates
+
+Each entry in `resourceEstimates` describes the fee threshold for a single resource type.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `resource` | `string` | Resource name: `"gasUsed"`, `"executionTime"`, or `"dataAvailability"` |
+| `thresholdPriorityFee` | `quantity` | Minimum fee to displace enough lower-paying transactions to free capacity for the bundle |
+| `recommendedPriorityFee` | `quantity` | Fee with a safety margin above the threshold |
+| `cumulativeUsage` | `quantity` | Total resource usage of transactions that would remain included alongside the bundle |
+| `thresholdTxCount` | `integer` | Number of higher-paying transactions that would be included alongside the bundle |
+| `totalTransactions` | `integer` | Total transactions considered in the estimate |
+
+#### Transaction results
+
+Each entry in `results` describes the simulation outcome for one transaction.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `txHash` | `hash` | Transaction hash |
+| `fromAddress` | `address` | Sender address |
+| `toAddress` | `address` | Recipient address (`null` for contract creation) |
+| `gasUsed` | `integer` | Gas consumed |
+| `gasPrice` | `quantity` | Effective gas price |
+| `gasFees` | `quantity` | Gas fees paid |
+| `coinbaseDiff` | `quantity` | Change in sequencer balance from this transaction |
+| `ethSentToCoinbase` | `quantity` | ETH explicitly sent to the sequencer |
+| `value` | `quantity` | ETH value transferred |
+| `executionTimeUs` | `integer` | Execution time in microseconds |
+
+### Example response
+
+```json title="Example response" lines expandable
+{
+  "priorityFee": "0x5f5e100",
+  "blocksSampled": 12,
+  "resourceEstimates": [
+    {
+      "resource": "gasUsed",
+      "thresholdPriorityFee": "0x3b9aca00",
+      "recommendedPriorityFee": "0x5f5e100",
+      "cumulativeUsage": "0x1e8480",
+      "thresholdTxCount": 5,
+      "totalTransactions": 10
+    },
+    {
+      "resource": "executionTime",
+      "thresholdPriorityFee": "0x2540be400",
+      "recommendedPriorityFee": "0x2540be400",
+      "cumulativeUsage": "0xf4240",
+      "thresholdTxCount": 8,
+      "totalTransactions": 10
+    },
+    {
+      "resource": "dataAvailability",
+      "thresholdPriorityFee": "0x1",
+      "recommendedPriorityFee": "0x1",
+      "cumulativeUsage": "0x2710",
+      "thresholdTxCount": 10,
+      "totalTransactions": 10
+    }
+  ],
+  "bundleGasPrice": "0x3b9aca00",
+  "bundleHash": "0xabc123...",
+  "coinbaseDiff": "0x4a817c800",
+  "ethSentToCoinbase": "0x0",
+  "gasFees": "0x4a817c800",
+  "results": [
+    {
+      "txHash": "0xdef456...",
+      "fromAddress": "0x1111111111111111111111111111111111111111",
+      "toAddress": "0x2222222222222222222222222222222222222222",
+      "gasUsed": 21000,
+      "gasPrice": "0x3b9aca00",
+      "gasFees": "0x4a817c800",
+      "coinbaseDiff": "0x4a817c800",
+      "ethSentToCoinbase": "0x0",
+      "value": "0x0",
+      "executionTimeUs": 150
+    }
+  ],
+  "stateBlockNumber": 12345,
+  "stateFlashblockIndex": 3,
+  "totalGasUsed": 21000,
+  "totalExecutionTimeUs": 150,
+  "stateRootTimeUs": 80
+}
+```
+
+## Interpreting the response
+
+The `priorityFee` field is the recommended value for your transaction's `maxPriorityFeePerGas`. It reflects the highest recommended fee across all three resource types, so setting your priority fee to at least this value gives your transaction the best chance of inclusion.
+
+To understand which resource is driving the fee, inspect the `resourceEstimates` array. The resource with the highest `recommendedPriorityFee` is the binding constraint on your bundle's inclusion.
+
+| Scenario | `priorityFee` | `blocksSampled` | What it means |
+|----------|---------------|-----------------|---------------|
+| Normal congestion | `> 0` | `> 0` | Set your `maxPriorityFeePerGas` to at least this value. |
+| Uncongested | Low value | `> 0` | Blocks have spare capacity. The returned fee is a floor value. |
+| No historical data | `0x0` | `0` | The metering system does not have enough data yet. The bundle simulation results are still valid. |
+
+## How the estimate works
+
+The estimation runs in three stages:
+
+<Steps>
+<Step title="Simulate the bundle" titleSize="h3">
+Your bundle is executed against the latest pending state (including any in-progress flashblocks). This produces the bundle's resource consumption: gas used, execution time, and DA bytes.
+</Step>
+<Step title="Estimate per block" titleSize="h3">
+For each recent block (default: 12 blocks), the estimator evaluates each flashblock:
+
+- Transactions are sorted by priority fee, highest first.
+- For each resource, the algorithm walks down the sorted list, accumulating resource usage.
+- It stops when adding the next transaction would leave less remaining capacity than your bundle needs.
+- The last included transaction's fee becomes the **threshold** — the minimum fee your bundle would need to displace it.
+- If all transactions fit with room to spare, the resource is uncongested and a default floor fee is returned.
+
+**Execution time** is a use-it-or-lose-it resource. Unused time in one flashblock does not carry over to the next. For this resource, transactions are aggregated across all flashblocks before running the estimation.
+</Step>
+<Step title="Aggregate across blocks" titleSize="h3">
+For each resource, the **median** recommended fee across all sampled blocks is computed. The final `priorityFee` is the **maximum** across all three resources.
+</Step>
+</Steps>
+
+## Errors
+
+| Error | Cause |
+|-------|-------|
+| `Priority fee estimation not configured` | The node does not have resource metering enabled. |
+| `bundle ... demand (...) exceeds capacity limit (...)` | Your bundle's resource consumption exceeds the block's capacity for that resource. The bundle cannot fit in a single block. |
+| `Failed to parse bundle` | One or more transactions in `txs` could not be decoded as valid RLP-encoded EIP-2718 envelopes. |
+| `Bundle metering failed` | The simulation failed (for example, insufficient balance or invalid nonce). |

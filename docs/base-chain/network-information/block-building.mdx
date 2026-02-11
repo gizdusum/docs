@@ -13,8 +13,8 @@ The Base networks are currently configured in the following ways:
 
 | Network      | Current Configuration       | Upcoming Deployments   |
 |--------------|-----------------------------|------------------------|
-| Base Mainnet | [Flashblocks](#flashblocks) + [Per-Transaction Gas Max](#per-transaction-gas-maximum) | |
-| Base Sepolia | [Flashblocks](#flashblocks) + [Per-Transaction Gas Max](#per-transaction-gas-maximum) | |
+| Base Mainnet | [Flashblocks](#flashblocks) + [Per-Transaction Gas Max](#per-transaction-gas-maximum) | [Resource Metering](#resource-metering) |
+| Base Sepolia | [Flashblocks](#flashblocks) + [Per-Transaction Gas Max](#per-transaction-gas-maximum) | [Resource Metering](#resource-metering) |
 
 See the [Configuration Changelog](/base-chain/network-information/configuration-changelog) for a history of changes to block building and other network parameters.
 
@@ -47,6 +47,12 @@ Base enforces a per-transaction gas maximum of **25,000,000 gas**. Transactions 
 Fusaka's [EIP 7825](https://eips.ethereum.org/EIPS/eip-7825) **will** change the block validity conditions and enforce a lower per-transaction gas maximum of 16,777,216 gas (2^24). We expect this protocol change to be adopted in all OP Stack chains around January 2026.
 
 Bundler operators for smart contract wallets must configure their systems to limit the bundle size to fit within this cap.
+
+### Resource metering
+
+In addition to gas limits, Base measures the **execution time** and **data availability (DA) cost** of each transaction. The block builder uses these measurements to enforce per-transaction and per-flashblock resource limits, ensuring no single transaction can cause builder timeouts or uneven resource distribution across flashblocks.
+
+When resources are constrained, transactions are included in priority fee order — higher-paying transactions are included first. You can query the recommended priority fee for your transaction using the `base_meteredPriorityFeePerGas` RPC method. See [Resource Metering](/base-chain/network-information/resource-metering) for details.
 
 ### Vanilla
 
