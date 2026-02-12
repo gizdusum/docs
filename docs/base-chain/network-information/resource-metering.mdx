@@ -11,11 +11,11 @@ Base uses **resource metering** to measure how much computation each transaction
 - **Execution time** — wall-clock time spent executing the transaction in the EVM
 - **Data availability (DA)** — compressed transaction size posted to L1
 
-Each resource has a limited budget per block (or per flashblock). When demand exceeds capacity, the block builder includes transactions in priority fee order: higher-paying transactions are included first, and lower-paying transactions are displaced.
+Each resource has a limited budget per block (or per flashblock). The block builder always includes transactions in priority fee order, but when demand for a resource exceeds capacity, lower-paying transactions are skipped for inclusion until capacity allows.
 
 Resource metering affects you in two ways:
 
-1. **Transactions that consume excessive resources may be excluded from blocks.** If your transaction uses a disproportionate amount of execution time or DA relative to its gas usage, it may be excluded even if its gas-based priority fee would normally be sufficient.
+1. **Transactions that consume excessive resources may be skipped for inclusion.** If your transaction uses a disproportionate amount of execution time or DA relative to its gas usage, it may be skipped even if its gas-based priority fee would normally be sufficient.
 2. **You can query the recommended priority fee for your transaction.** The `base_meteredPriorityFeePerGas` RPC method simulates your transaction and returns the priority fee needed to get included based on recent block congestion across all three resources.
 
 ## Get a recommended priority fee
