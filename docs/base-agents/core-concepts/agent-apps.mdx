@@ -4,3 +4,24 @@ description: "Build services for agents and make your app discoverable"
 ---
 
 Agent Apps are services built with agents as the primary user. This page covers how to build for agents and how to make your app discoverable so agents can find and interact with it.
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/-y0ZJ-0z7Ow?si=YtmXlwM_3m8Gm0WE"
+  title="Agent wallets on Base"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+
+## How agents interact with apps
+
+Agents discover services via a `skill.md` file hosted at `/.well-known/skill.md`. This file describes what your app does, what endpoints are available, and how to use them. When an agent reads your skill.md, it understands how to interact with your service.
+
+Build your app with this in mind: expose clear endpoints, document them in skill.md, and let agents find you.
+
+## Making your app discoverable
+
+Register your app via ERC-8004 so agents can find it. The same registry used for agent identity is used for app discovery. Once registered, agents can query the registry, find your service, and read your skill.md to understand how to interact.
+
+[View the Agent App Framework →](https://github.com/base/agent-apps-experimental)
