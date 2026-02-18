@@ -12,3 +12,23 @@ Wallets are the first step to getting your agent onchain. They give your agent t
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
   allowFullScreen
 ></iframe>
+
+## Why your agent needs a dedicated wallet
+
+An agent can spin up its own wallet via prompting, but this isn't safe in practice. The private key becomes exposed in the agent's context, creating a security risk. The following options give your agent wallet capabilities with minimised risk:
+
+<CardGroup cols={2}>
+<Card title="BANKR Wallet" icon="wallet" href="https://github.com/BankrBot/openclaw-skills">
+  Install from github.com/BankrBot/openclaw-skills
+</Card>
+
+<Card title="AWAL Wallet" icon="wallet" href="https://docs.cdp.coinbase.com/agentic-wallet/quickstart">
+  Install from docs.cdp.coinbase.com/agentic-wallet/quickstart
+</Card>
+</CardGroup>
+
+## Next steps
+
+<Card title="Identity, verification, and auth" icon="arrow-right" href="/base-agents/core-concepts/identity-verification-auth">
+  Learn how ERC-8004, ERC-8124, and SIWA establish trust for your agent.
+</Card>
