@@ -497,20 +497,20 @@
         ]
       },
       {
-        "tab": "Agents",
+        "tab": "AI Agents",
         "groups": [
           {
             "group": "Introduction",
-            "pages": ["base-agents/overview/index"]
+            "pages": ["ai-agents/introduction/index"]
           },
           {
             "group": "Core Concepts",
             "pages": [
-              "base-agents/core-concepts/wallets",
-              "base-agents/core-concepts/identity-verification-auth",
-              "base-agents/core-concepts/onchain-capabilities",
-              "base-agents/core-concepts/agent-apps",
-              "base-agents/core-concepts/agent-frameworks"
+              "ai-agents/core-concepts/wallets",
+              "ai-agents/core-concepts/identity-verification-auth",
+              "ai-agents/core-concepts/payments-and-transactions",
+              "ai-agents/core-concepts/agent-apps",
+              "ai-agents/core-concepts/agent-frameworks"
             ]
           }
         ]

@@ -15,12 +15,12 @@ Your agent needs to be discoverable and verifiable. ERC-8004 registers your agen
 
 ## Registry and verification
 
-A trusted agent registry (ERC-8004) allows agents and services to register their identity onchain. When registered, your agent has a publicly auditable identity declaring what it does and where its endpoints live. Other agents can check this registry before interacting.
+A trusted agent registry allows agents and services to register their identity onchain. When registered, your agent has a publicly auditable identity declaring what it does and where its endpoints live. Other agents can check this registry before interacting.
 
-Discovery alone isn't enough. Verification (ERC-8128) happens at execution time. When your agent registers, its identity is tied to a cryptographic keypair. When your agent calls a service, the service signs its response using those keys. Your agent checks the signature against the registry. If they match, you're talking to the right endpoint.
+Discovery alone isn't enough. Verification happens at execution time. When your agent registers, its identity is tied to a cryptographic keypair. When your agent calls a service, the service signs its response using those keys. Your agent checks the signature against the registry. If they match, you're talking to the right endpoint.
 
-[Deep dive on ERC-8004 →](https://www.8004.org/)
-[Deep dive on ERC-8128 →](https://erc8128.slice.so/concepts/overview)
+[Deep dive on Agent Registry →](https://www.8004.org/)
+[Deep dive on Agent Verification →](https://erc8128.slice.so/concepts/overview)
 
 ## Sign In With Agent (SIWA)
 
@@ -30,6 +30,6 @@ Learn more at [siwa.id](https://siwa.id).
 
 ## Next step
 
-<Card title="Payment &  Transactions" icon="link" href="/base-agents/core-concepts/onchain-capabilities">
+<Card title="Payment & Transactions" icon="link" href="/ai-agents/core-concepts/payments-and-transactions">
   Enable your agent to make payments, execute transactions, and interact with protocols.
 </Card>
