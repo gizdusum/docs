@@ -497,6 +497,25 @@
         ]
       },
       {
+        "tab": "Base Agents",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": ["base-agents/overview/index"]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "base-agents/core-concepts/wallets",
+              "base-agents/core-concepts/identity-verification-auth",
+              "base-agents/core-concepts/onchain-capabilities",
+              "base-agents/core-concepts/agent-apps",
+              "base-agents/core-concepts/agent-frameworks"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "OnchainKit",
         "versions": [
           {
