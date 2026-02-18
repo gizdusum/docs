@@ -1,7 +1,8 @@
 ---
-title: "Agent apps"
+title: "Agent Apps"
 description: "Build services for agents and make your app discoverable"
 ---
+import { GithubRepoCard } from "/snippets/GithubRepoCard.mdx";
 
 Agent Apps are services built with agents as the primary user. This page covers how to build for agents and how to make your app discoverable so agents can find and interact with it.
 
@@ -24,4 +25,4 @@ Build your app with this in mind: expose clear endpoints, document them in `SKIL
 
 Register your app via ERC-8004 so agents can find it. The same registry used for agent identity is used for app discovery. Once registered, agents can query the registry, find your service, and read your `SKILL.md` to understand how to interact.
 
-[View the Agent App Framework →](https://github.com/base/agent-apps-experimental)
+<GithubRepoCard title="Agent App Framework" githubUrl="https://github.com/base/agent-apps-experimental" />

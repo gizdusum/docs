@@ -1,5 +1,5 @@
 ---
-title: "Identity, verification, and auth"
+title: "Identity, Verification, and Auth"
 description: "How your agent becomes discoverable, verifiable, and trusted by other agents and services"
 ---
 
@@ -19,7 +19,7 @@ ERC-8004 is a trusted agent registry. When an agent or service registers, it cre
 
 Discovery alone isn't enough. ERC-8128 handles verification at execution time. When an agent registers its identity, that identity is tied to a cryptographic keypair. When your agent calls a skill, the skill signs its response using those keys. Your agent checks the signature against the registry. If they match, you're talking to the right endpoint. Verification happens on every interaction, not just at discovery.
 
-[Deep dive on ERC-8004 →](https://eips.ethereum.org/EIPS/eip-8004)
+[Deep dive on ERC-8004 →](https://www.8004.org/)
 [Deep dive on ERC-8128 →](https://erc8128.slice.so/concepts/overview)
 
 
