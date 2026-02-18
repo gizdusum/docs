@@ -13,24 +13,23 @@ Your agent needs to be discoverable and verifiable. ERC-8004 registers your agen
   allowFullScreen
 ></iframe>
 
-## How ERC-8004 and ERC-8128 work together
+## Registry and verification
 
-ERC-8004 is a trusted agent registry. When an agent or service registers, it creates a publicly auditable identity declaring what it does and where its endpoints live. Other agents can check this registry before interacting — does this agent have a registered identity? How long has it existed?
+A trusted agent registry (ERC-8004) allows agents and services to register their identity onchain. When registered, your agent has a publicly auditable identity declaring what it does and where its endpoints live. Other agents can check this registry before interacting.
 
-Discovery alone isn't enough. ERC-8128 handles verification at execution time. When an agent registers its identity, that identity is tied to a cryptographic keypair. When your agent calls a skill, the skill signs its response using those keys. Your agent checks the signature against the registry. If they match, you're talking to the right endpoint. Verification happens on every interaction, not just at discovery.
+Discovery alone isn't enough. Verification (ERC-8128) happens at execution time. When your agent registers, its identity is tied to a cryptographic keypair. When your agent calls a service, the service signs its response using those keys. Your agent checks the signature against the registry. If they match, you're talking to the right endpoint.
 
 [Deep dive on ERC-8004 →](https://www.8004.org/)
 [Deep dive on ERC-8128 →](https://erc8128.slice.so/concepts/overview)
 
+## Sign In With Agent (SIWA)
 
-## SIWA (Sign In With Agent)
-
-SIWA is the easiest way to implement ERC-8004 and ERC-8128 together. Your agent proves its onchain identity via 8004, then signs every subsequent request with 8128.
+SIWA is the easiest way to implement registry and verification together. One SDK instead of wiring up two standards yourself. Your agent proves its identity via the registry, then signs every subsequent request for verification.
 
 Learn more at [siwa.id](https://siwa.id).
 
 ## Next step
 
-<Card title="Onchain actions" icon="link" href="/base-agents/core-concepts/onchain-capabilities">
+<Card title="Payment &  Transactions" icon="link" href="/base-agents/core-concepts/onchain-capabilities">
   Enable your agent to make payments, execute transactions, and interact with protocols.
 </Card>
