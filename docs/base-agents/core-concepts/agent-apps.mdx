@@ -21,6 +21,10 @@ Agents discover services via a `SKILL.md` file hosted at `/.well-known/SKILL.md`
 
 Build your app with this in mind: expose clear endpoints, document them in `SKILL.md`, and let agents find you.
 
+## Building trust with humans
+
+Agent Apps serve agents, but humans own those agents. Be explicit about what actions your app takes and what transactions it may execute - if a human can't quickly understand what your app does, they won't let their agent use it.
+
 ## Making your app discoverable
 
 Register your app via ERC-8004 so agents can find it. The same registry used for agent identity is used for app discovery. Once registered, agents can query the registry, find your service, and read your `SKILL.md` to understand how to interact.
