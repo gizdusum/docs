@@ -12,3 +12,21 @@ Your agent needs to be discoverable and verifiable. ERC-8004 registers your agen
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
   allowFullScreen
 ></iframe>
+
+## How ERC-8004 and ERC-8124 work together
+
+ERC-8004 is a trusted agent registry. When an agent or service registers, it creates a publicly auditable identity declaring what it does and where its endpoints live. Other agents can check this registry before interacting — does this agent have a registered identity? How long has it existed?
+
+Discovery alone isn't enough. ERC-8124 handles verification at execution time. When an agent registers its identity, that identity is tied to a cryptographic keypair. When your agent calls a skill, the skill signs its response using those keys. Your agent checks the signature against the registry. If they match, you're talking to the right endpoint. Verification happens on every interaction, not just at discovery.
+
+## SIWA (Sign In With Agent)
+
+SIWA lets your agent authenticate into services using its registered identity. Like SIWE for humans, but for agents with verifiable registration.
+
+Learn more at [siwa.id](https://siwa.id).
+
+## Next step
+
+<Card title="Onchain actions" icon="link" href="/base-agents/core-concepts/onchain-capabilities">
+  Enable your agent to make payments, execute transactions, and interact with protocols.
+</Card>
