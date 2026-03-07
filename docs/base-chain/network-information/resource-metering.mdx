@@ -18,6 +18,16 @@ Resource metering affects you in two ways:
 1. **Transactions that consume excessive resources may be skipped for inclusion.** If your transaction uses a disproportionate amount of execution time or DA relative to its gas usage, it may be skipped even if its gas-based priority fee would normally be sufficient.
 2. **You can query the recommended priority fee for your transaction.** The `base_meteredPriorityFeePerGas` RPC method simulates your transaction and returns the priority fee needed to get included based on recent block congestion across all three resources.
 
+## Impact on bundlers
+
+ERC-4337 bundlers are particularly affected by resource metering. Previously, fitting within the block's gas limit was the main constraint for getting a bundle included. Resource metering adds new dimensions: not only does the gas have to fit, but the execution time and state root time must also fit within per-block limits. This makes large, multi-operation bundles harder to include than before.
+
+Bundler operators can mitigate this by:
+
+- **Sending single-transaction bundles** to reduce per-bundle resource consumption.
+- **Metering transactions before including them in bundles** to identify and exclude UserOperations that consume disproportionate resources.
+- **Using `base_meteredPriorityFeePerGas`** to set the priority fee high enough for the bundle to be included based on actual resource usage.
+
 ## Get a recommended priority fee
 
 The `base_meteredPriorityFeePerGas` RPC method simulates a bundle of transactions and returns a recommended priority fee based on recent block congestion. It evaluates all three resource types independently and returns the highest fee across them.
