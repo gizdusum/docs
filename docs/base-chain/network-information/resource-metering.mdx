@@ -5,18 +5,14 @@ description: Learn how Base measures transaction resource usage and how to set p
 
 ## Overview
 
-Base uses **resource metering** to measure how much computation each transaction requires during block building. Three resources are tracked:
+Blocks and flashblocks are already constrained by **gas** and **data availability (DA)** limits. Resource metering adds two new dimensions: **execution time** and **state root time** — wall-clock measurements of how long each transaction takes to execute and how long its state root computation takes. These new dimensions let the builder enforce time-based limits that gas alone cannot express.
 
-- **Gas** — total gas consumed by the transaction
-- **Execution time** — wall-clock time spent executing the transaction in the EVM
-- **Data availability (DA)** — compressed transaction size posted to L1
-
-Each resource has a limited budget per block (or per flashblock). The block builder always includes transactions in priority fee order, but when demand for a resource exceeds capacity, lower-paying transactions are skipped for inclusion until capacity allows.
+The `base_meteredPriorityFeePerGas` RPC method estimates the priority fee needed for inclusion across all four resource dimensions, not just gas. This lets you set fees that account for execution time and DA pressure, not just block fullness.
 
 Resource metering affects you in two ways:
 
-1. **Transactions that consume excessive resources may be skipped for inclusion.** If your transaction uses a disproportionate amount of execution time or DA relative to its gas usage, it may be skipped even if its gas-based priority fee would normally be sufficient.
-2. **You can query the recommended priority fee for your transaction.** The `base_meteredPriorityFeePerGas` RPC method simulates your transaction and returns the priority fee needed to get included based on recent block congestion across all three resources.
+1. **Transactions that consume excessive resources may be skipped for inclusion.** If your transaction uses a disproportionate amount of execution time relative to its gas usage, it may be skipped even if its gas-based priority fee would normally be sufficient.
+2. **You can query the recommended priority fee for your transaction.** The `base_meteredPriorityFeePerGas` RPC method simulates your transaction and returns the priority fee needed to get included based on recent block congestion across all resource types.
 
 ## Impact on bundlers
 
@@ -30,7 +26,7 @@ Bundler operators can mitigate this by:
 
 ## Get a recommended priority fee
 
-The `base_meteredPriorityFeePerGas` RPC method simulates a bundle of transactions and returns a recommended priority fee based on recent block congestion. It evaluates all three resource types independently and returns the highest fee across them.
+The `base_meteredPriorityFeePerGas` RPC method simulates a bundle of transactions and returns a recommended priority fee based on recent block congestion. It evaluates all resource types independently and returns the highest fee across them.
 
 ### Request
 
@@ -93,7 +89,7 @@ Each entry in `resourceEstimates` describes the fee threshold for a single resou
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `resource` | `string` | Resource name: `"gasUsed"`, `"executionTime"`, or `"dataAvailability"` |
+| `resource` | `string` | Resource name: `"gasUsed"`, `"executionTime"`, `"stateRootTime"`, or `"dataAvailability"` |
 | `thresholdPriorityFee` | `quantity` | Minimum fee to displace enough lower-paying transactions to free capacity for the bundle |
 | `recommendedPriorityFee` | `quantity` | Fee with a safety margin above the threshold |
 | `cumulativeUsage` | `quantity` | Total resource usage of transactions that would remain included alongside the bundle |
@@ -178,7 +174,7 @@ Each entry in `results` describes the simulation outcome for one transaction.
 
 ## Interpreting the response
 
-The `priorityFee` field is the recommended value for your transaction's `maxPriorityFeePerGas`. It reflects the highest recommended fee across all three resource types, so setting your priority fee to at least this value gives your transaction the best chance of inclusion.
+The `priorityFee` field is the recommended value for your transaction's `maxPriorityFeePerGas`. It reflects the highest recommended fee across all resource types, so setting your priority fee to at least this value gives your transaction the best chance of inclusion.
 
 To understand which resource is driving the fee, inspect the `resourceEstimates` array. The resource with the highest `recommendedPriorityFee` is the binding constraint on your bundle's inclusion.
 
@@ -194,10 +190,10 @@ The estimation runs in three stages:
 
 <Steps>
 <Step title="Simulate the bundle" titleSize="h3">
-Your bundle is executed against the latest pending state (including any in-progress flashblocks). This produces the bundle's resource consumption: gas used, execution time, and DA bytes.
+Your bundle is executed against the latest pending state (including any in-progress flashblocks). This produces the bundle's resource consumption: gas used, execution time, state root time, and DA bytes.
 </Step>
 <Step title="Estimate per block" titleSize="h3">
-For each recent block (default: 12 blocks), the estimator evaluates each flashblock:
+For each recent block (default: 12 blocks), the estimator evaluates each flashblock using the core algorithm:
 
 - Transactions are sorted by priority fee, highest first.
 - For each resource, the algorithm walks down the sorted list, accumulating resource usage.
@@ -205,10 +201,13 @@ For each recent block (default: 12 blocks), the estimator evaluates each flashbl
 - The last included transaction's fee becomes the **threshold** — the minimum fee your bundle would need to displace it.
 - If all transactions fit with room to spare, the resource is uncongested and a default floor fee is returned.
 
-**Execution time** is a use-it-or-lose-it resource. Unused time in one flashblock does not carry over to the next. For this resource, transactions are aggregated across all flashblocks before running the estimation.
+Resources have different budget behaviors that affect which transactions are evaluated:
+
+- **Execution time** resets each flashblock — each flashblock is evaluated independently against the full per-flashblock budget. The worst (highest fee) flashblock becomes the block-level summary.
+- **Gas, state root time, and DA bytes** accumulate across the block — the whole-block budget is divided into cumulative per-flashblock deadlines. Each flashblock is evaluated against a growing prefix of all transactions up to that point. The block-end estimate becomes the summary.
 </Step>
 <Step title="Aggregate across blocks" titleSize="h3">
-For each resource, the **median** recommended fee across all sampled blocks is computed. The final `priorityFee` is the **maximum** across all three resources.
+For each resource, the **median** recommended fee across all sampled blocks is computed. The final `priorityFee` is the **maximum** across all resource types.
 </Step>
 </Steps>
 

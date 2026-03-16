@@ -50,7 +50,7 @@ Bundler operators for smart contract wallets must configure their systems to lim
 
 ### Resource metering
 
-In addition to gas limits, Base measures the **execution time** and **data availability (DA) cost** of each transaction. The block builder uses these measurements to enforce per-transaction and per-flashblock resource limits, ensuring no single transaction can cause builder timeouts or uneven resource distribution across flashblocks.
+In addition to existing gas and DA limits, Base measures the **execution time** and **state root time** of each transaction. The block builder uses these measurements to enforce time-based resource limits that gas alone cannot express — for example, a single precompile call can consume hundreds of milliseconds of CPU while using a fraction of the gas limit.
 
 When resources are constrained, transactions are included in priority fee order — higher-paying transactions are included first. You can query the recommended priority fee for your transaction using the `base_meteredPriorityFeePerGas` RPC method. See [Resource Metering](/base-chain/network-information/resource-metering) for details.
 
