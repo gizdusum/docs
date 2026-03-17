@@ -56,7 +56,7 @@ For a comprehensive technical deep dive into Flashblocks architecture, see the [
 
 Base enforces a per-transaction gas maximum of **25,000,000 gas**. Transactions that specify a gas limit above this value are **rejected by the mempool before inclusion**. `eth_sendTransaction` or `eth_sendRawTransaction` will return a JSON-RPC error (for example: `exceeds maximum per-transaction gas limit`). This cap does **not** change the block gas limit or the block validity conditions.
 
-Fusaka's [EIP 7825](https://eips.ethereum.org/EIPS/eip-7825) **will** change the block validity conditions and enforce a lower per-transaction gas maximum of 16,777,216 gas (2^24). We expect this protocol change to be adopted in all OP Stack chains around January 2026.
+As of the [V1 upgrade](https://specs.base.org/upgrades/v1/exec-engine#transaction-gas-limit-cap) ([EIP-7825](https://eips.ethereum.org/EIPS/eip-7825)), the protocol-level cap is **16,777,216 gas (2^24)**, enforced at the block validity level in addition to the mempool.
 
 Bundler operators for smart contract wallets must configure their systems to limit the bundle size to fit within this cap.
 
