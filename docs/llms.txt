@@ -27,7 +27,7 @@ Base is an Ethereum L2 by Coinbase. Docs for: Base Chain, Smart Wallet, OnchainK
 |ai-agents/frameworks:eliza,langchain,vercel-ai-sdk
 |ai-agents/guides:agent-app,register-and-sign-in-your-agent,trading,wallet-setup,x402-payments
 |ai-agents/introduction:choosing-a-framework
-|ai-agents/quickstart:agentkit,openclaw-claude
+|ai-agents/quickstart:agentkit,openclaw-
 |ai-agents/reference:contracts
 |base-account/basenames:basename-transfer,basenames-faq,basenames-wagmi-tutorial
 |base-account/contribute:contribute-to-base-account-docs,security-and-bug-bounty

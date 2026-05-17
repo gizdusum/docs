@@ -17,14 +17,14 @@ const CONFIG = {
   skipFiles: [
     'README.md', 'CHANGELOG.md', 'LICENSE.md', '.DS_Store',
     'docs.json', 'package-lock.json', 'llms.txt', 'llms-full.txt',
-    'iframe-theme.js', 'style.css', 'instructions.md', 'writing.md', 'CLAUDE.md'
+    'iframe-theme.js', 'style.css', 'instructions.md', 'writing.md', '.md'
   ],
 
   skipFilePatterns: [/-vid$/, /-video$/, /-sbs$/],
 
   skipDirs: [
     'node_modules', '.git', 'dist', 'build', 'coverage',
-    '.next', 'images', 'videos', 'logo', 'openapi', '.claude', 'snippets'
+    '.next', 'images', 'videos', 'logo', 'openapi', '.', 'snippets'
   ],
 
   extensions: ['.md', '.mdx']
